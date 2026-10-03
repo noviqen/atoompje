@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atoompje – Leer het periodiek systeem</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo"><span class="atoom">⚛️</span> Atoompje</div>
+    <div class="ondertitel">Periodiek systeem – blokkendoos van de chemie</div>
+    <div class="scorebalk">
+      <span title="Gekende elementen">⭐ <b id="aantalGekend">0</b>/118</span>
+      <span title="Beste reeks">🔥 <b id="besteReeks">0</b></span>
+      <button id="geluidKnop" title="Geluid aan/uit">🔊</button>
+    </div>
+  </header>
+
+  <nav>
+    <button data-tab="tabel" class="actief">🧪 Tabel</button>
+    <button data-tab="kaarten">🃏 Flitskaarten</button>
+    <button data-tab="quiz">🎯 Quiz</button>
+    <button data-tab="bruggetjes">🧠 Ezelsbruggetjes</button>
+    <button data-tab="voortgang">🏆 Voortgang</button>
+  </nav>
+
+  <main>
+    <!-- TABEL -->
+    <section id="tabel" class="tab actief">
+      <p class="hint">Tik op een element om er alles over te ontdekken! 👇</p>
+      <div class="rooster-wrap"><div class="rooster" id="rooster"></div></div>
+      <div class="legenda" id="legenda"></div>
+    </section>
+
+    <!-- FLITSKAARTEN -->
+    <section id="kaarten" class="tab">
+      <div class="keuze">
+        <label>Oefenset: <select id="kaartSet"></select></label>
+      </div>
+      <div class="kaart-stapel">
+        <div class="flitskaart" id="flitskaart">
+          <div class="kant voor" id="kaartVoor"></div>
+          <div class="kant achter" id="kaartAchter"></div>
+        </div>
+      </div>
+      <p class="hint">Tik op de kaart om hem om te draaien</p>
+      <div class="knoppen">
+        <button class="knop rood" id="nogNiet">😅 Nog oefenen</button>
+        <button class="knop groen" id="kenIk">😎 Ken ik!</button>
+      </div>
+      <p class="klein" id="kaartInfo"></p>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz" class="tab">
+      <div id="quizStart">
+        <h2>Kies je uitdaging</h2>
+        <div class="keuze">
+          <label>Elementen: <select id="quizSet"></select></label>
+        </div>
+        <div class="modi">
+          <button class="modus" data-modus="naam2sym"><span>🔤</span>Naam → symbool</button>
+          <button class="modus" data-modus="sym2naam"><span>🅰️</span>Symbool → naam</button>
+          <button class="modus" data-modus="zoek"><span>🗺️</span>Zoek op de kaart</button>
+          <button class="modus" data-modus="weetje"><span>💡</span>Raad het weetje</button>
+          <button class="modus" data-modus="familie"><span>👪</span>Welke familie?</button>
+        </div>
+      </div>
+      <div id="quizSpel" hidden>
+        <div class="quizkop">
+          <span>Vraag <b id="vraagNr">1</b>/10</span>
+          <span>Score <b id="quizScore">0</b></span>
+          <span>🔥 <b id="reeks">0</b></span>
+        </div>
+        <div class="vraag" id="vraag"></div>
+        <div class="antwoorden" id="antwoorden"></div>
+        <div class="rooster-wrap" id="zoekWrap" hidden><div class="rooster mini" id="zoekRooster"></div></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="knop" id="volgende" hidden>Volgende ➜</button>
+      </div>
+      <div id="quizEinde" hidden>
+        <div class="einde-emoji" id="eindeEmoji">🏆</div>
+        <h2 id="eindeTekst"></h2>
+        <button class="knop groen" id="opnieuw">Nog een keer!</button>
+      </div>
+    </section>
+
+    <!-- EZELSBRUGGETJES -->
+    <section id="bruggetjes" class="tab">
+      <h2>🧠 Ezelsbruggetjes</h2>
+      <p class="hint">De vette letters zijn de symbolen, in de juiste volgorde.</p>
+      <div class="bruggen" id="bruggen"></div>
+      <h2>🏛️ Rare symbolen? Dat is Latijn!</h2>
+      <p class="hint">Sommige symbolen lijken niet op de Nederlandse naam. Zo onthoud je ze:</p>
+      <div class="bruggen" id="latijn"></div>
+    </section>
+
+    <!-- VOORTGANG -->
+    <section id="voortgang" class="tab">
+      <h2>🏆 Jouw voortgang</h2>
+      <div class="voortgang-balk"><div id="voortgangVulling"></div></div>
+      <p id="voortgangTekst" class="hint"></p>
+      <div class="badges" id="badges"></div>
+      <p class="hint">Groen = gekend, geel = bijna, grijs = nog te leren</p>
+      <div class="rooster-wrap"><div class="rooster mini" id="voortgangRooster"></div></div>
+      <button class="knop rood klein-knop" id="reset">Voortgang wissen</button>
+    </section>
+  </main>
+
+  <!-- Element-detail -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="detail" id="detail"></div>
+  </div>
+
+  <canvas id="confetti"></canvas>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
