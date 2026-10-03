@@ -99,7 +99,7 @@ $("legenda").addEventListener("click", (ev) => {
   actieveCat = actieveCat === cat ? null : cat;
   document.querySelectorAll("#legenda button").forEach((b) => b.classList.toggle("uit", actieveCat && b.dataset.cat !== actieveCat));
   document.querySelectorAll("#rooster .tegel[data-nr]").forEach((t) => t.classList.toggle("vaag", actieveCat && t.dataset.cat !== actieveCat));
-  if (actieveCat) praat(`audio/cat-${cat}.mp3`, `${CATEGORIEEN[cat].naam}. ${CATEGORIEEN[cat].uitleg}`, false);
+  if (actieveCat) praat(`audio/cat-${cat}.mp3?v=roos`, `${CATEGORIEEN[cat].naam}. ${CATEGORIEEN[cat].uitleg}`, false);
 });
 
 // ---------- Detailkaart ----------
@@ -125,7 +125,7 @@ function openDetail(e) {
   $("overlay").hidden = false;
   document.body.classList.add("geen-scroll");
   $("spreek").focus({ preventScroll: true });
-  $("spreek").onclick = () => praat(`audio/${e.nr}.mp3`, `${e.naam}. ${e.weetje}`);
+  $("spreek").onclick = () => praat(`audio/${e.nr}.mp3?v=roos`, `${e.naam}. ${e.weetje}`);
   $("detail").querySelectorAll("[data-ga]").forEach((b) => (b.onclick = () => openDetail(perNr[+b.dataset.ga])));
   piep(400 + e.nr * 4, 0.08);
 }
