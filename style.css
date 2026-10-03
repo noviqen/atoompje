@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Baloo 2";
+  src: url("fonts/baloo2-latin.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
 :root {
   --achtergrond: #dcefe9;
   --kaart: #ffffff;
@@ -188,6 +194,12 @@ select { font-family: inherit; font-size: 1rem; padding: 6px 10px; border-radius
 
 #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
 
+.alleen-mobiel { display: none; }
+body.geen-scroll { overflow: hidden; }
+.tegel:focus-visible, .knop:focus-visible, nav button:focus-visible, .antwoord:focus-visible, .modus:focus-visible { outline: 3px solid #f4c21b; outline-offset: 2px; }
+@media (hover: none) { .tegel:hover { transform: none; box-shadow: 0 2px 0 rgba(0,0,0,.18); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+@media (max-width: 1000px) { .alleen-mobiel { display: inline; } }
 @media (max-width: 600px) {
   .ondertitel { display: none; }
   .antwoorden { grid-template-columns: 1fr; }

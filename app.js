@@ -9,8 +9,24 @@ const groep = (e) => (e.rij >= 9 ? "3 (f-blok)" : e.kol);
 
 // ---------- Opslag ----------
 const OPSLAG = "atoompje-v1";
-let staat = JSON.parse(localStorage.getItem(OPSLAG) || "null") || { punten: {}, besteReeks: 0, quizzen: 0, perfect: 0, bekeken: [], geluid: true };
-const bewaar = () => localStorage.setItem(OPSLAG, JSON.stringify(staat));
+const nieuweStaat = () => ({ punten: {}, besteReeks: 0, quizzen: 0, perfect: 0, bekeken: [], geluid: true });
+// Opgeslagen voortgang voorzichtig inlezen: kapotte of geknoeide data mag de app nooit laten crashen
+function laadStaat() {
+  const s = nieuweStaat();
+  try {
+    const o = JSON.parse(localStorage.getItem(OPSLAG));
+    if (!o || typeof o !== "object") return s;
+    if (o.punten && typeof o.punten === "object") {
+      for (const [k, v] of Object.entries(o.punten)) if (perNr[k] && Number.isFinite(v)) s.punten[k] = Math.max(0, Math.min(5, Math.round(v)));
+    }
+    for (const k of ["besteReeks", "quizzen", "perfect"]) if (Number.isFinite(o[k]) && o[k] >= 0) s[k] = Math.floor(o[k]);
+    if (Array.isArray(o.bekeken)) s.bekeken = [...new Set(o.bekeken.filter((n) => perNr[n]))];
+    if (typeof o.geluid === "boolean") s.geluid = o.geluid;
+  } catch { /* geen opslag beschikbaar of ongeldige data: begin opnieuw */ }
+  return s;
+}
+let staat = laadStaat();
+const bewaar = () => { try { localStorage.setItem(OPSLAG, JSON.stringify(staat)); } catch { /* bijv. privévenster: alleen deze sessie */ } };
 const punten = (nr) => staat.punten[nr] || 0;
 const status = (nr) => (punten(nr) >= 3 ? 2 : punten(nr) > 0 ? 1 : 0);
 function scoor(nr, goed) {
@@ -83,7 +99,7 @@ $("legenda").addEventListener("click", (ev) => {
   actieveCat = actieveCat === cat ? null : cat;
   document.querySelectorAll("#legenda button").forEach((b) => b.classList.toggle("uit", actieveCat && b.dataset.cat !== actieveCat));
   document.querySelectorAll("#rooster .tegel[data-nr]").forEach((t) => t.classList.toggle("vaag", actieveCat && t.dataset.cat !== actieveCat));
-  if (actieveCat) praat(`${CATEGORIEEN[cat].naam}. ${CATEGORIEEN[cat].uitleg}`, false);
+  if (actieveCat) praat(`audio/cat-${cat}.mp3`, `${CATEGORIEEN[cat].naam}. ${CATEGORIEEN[cat].uitleg}`, false);
 });
 
 // ---------- Detailkaart ----------
@@ -107,35 +123,61 @@ function openDetail(e) {
       </div>
     </div>`;
   $("overlay").hidden = false;
-  $("spreek").onclick = () => praat(`${e.naam}. Symbool: ${e.sym.split("").join(" ")}. ${e.weetje}`);
+  document.body.classList.add("geen-scroll");
+  $("spreek").focus({ preventScroll: true });
+  $("spreek").onclick = () => praat(`audio/${e.nr}.mp3`, `${e.naam}. ${e.weetje}`);
   $("detail").querySelectorAll("[data-ga]").forEach((b) => (b.onclick = () => openDetail(perNr[+b.dataset.ga])));
   piep(400 + e.nr * 4, 0.08);
 }
-$("overlay").addEventListener("click", (ev) => { if (ev.target.id === "overlay") $("overlay").hidden = true; });
-document.addEventListener("keydown", (ev) => { if (ev.key === "Escape") $("overlay").hidden = true; });
+function sluitDetail() {
+  $("overlay").hidden = true;
+  document.body.classList.remove("geen-scroll");
+  stopPraten();
+}
+$("overlay").addEventListener("click", (ev) => { if (ev.target.id === "overlay") sluitDetail(); });
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && !$("overlay").hidden) sluitDetail(); });
 
-function praat(tekst, altijd = true) {
-  if (!("speechSynthesis" in window) || (!altijd && !staat.geluid)) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(tekst);
-  u.lang = "nl-NL"; u.rate = 0.95;
-  speechSynthesis.speak(u);
+// Voorlezen met vooraf opgenomen natuurlijke stem; alleen als dat mislukt de stem van de browser
+let speler = null;
+function stopPraten() {
+  if (speler) { speler.pause(); speler = null; }
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+}
+function praat(bestand, reserveTekst, altijd = true) {
+  if (!altijd && !staat.geluid) return;
+  stopPraten();
+  const a = new Audio(bestand);
+  speler = a;
+  const reserve = () => {
+    if (speler !== a || !("speechSynthesis" in window)) return;
+    speler = null;
+    const u = new SpeechSynthesisUtterance(reserveTekst);
+    u.lang = "nl-NL";
+    const stem = speechSynthesis.getVoices().find((v) => v.lang.replace("_", "-").startsWith("nl"));
+    if (stem) u.voice = stem;
+    speechSynthesis.speak(u);
+  };
+  a.addEventListener("error", reserve);
+  a.play().catch((fout) => { if (fout.name !== "AbortError") reserve(); });
 }
 
 // ---------- Geluid ----------
 let audio;
 function piep(freq, duur = 0.12, type = "sine") {
   if (!staat.geluid) return;
-  audio = audio || new (window.AudioContext || window.webkitAudioContext)();
-  const o = audio.createOscillator(), g = audio.createGain();
-  o.type = type; o.frequency.value = freq;
-  g.gain.setValueAtTime(0.15, audio.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + duur);
-  o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + duur);
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    if (audio.state === "suspended") audio.resume();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.15, audio.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + duur);
+    o.connect(g).connect(audio.destination); o.start(); o.stop(audio.currentTime + duur);
+  } catch { /* geen geluid mogelijk: de app werkt gewoon door */ }
 }
 const geluidGoed = () => { piep(660); setTimeout(() => piep(880), 100); };
 const geluidFout = () => piep(180, 0.25, "square");
-$("geluidKnop").onclick = () => { staat.geluid = !staat.geluid; bewaar(); werkScoreBij(); };
+$("geluidKnop").onclick = () => { staat.geluid = !staat.geluid; if (!staat.geluid) stopPraten(); bewaar(); werkScoreBij(); };
 
 // ---------- Confetti ----------
 const doek = $("confetti"), pen = doek.getContext("2d");
@@ -161,8 +203,9 @@ function animeer() {
 }
 
 // ---------- Flitskaarten ----------
-let huidigeKaart = null;
+let huidigeKaart = null, kaartBezig = false;
 function nieuweKaart() {
+  kaartBezig = true;
   const lijst = SETS[$("kaartSet").value].lijst();
   // Elementen die je minder goed kent komen vaker langs
   const gewogen = lijst.flatMap((e) => Array(6 - Math.min(5, punten(e.nr))).fill(e)).filter((e) => e !== huidigeKaart);
@@ -174,12 +217,13 @@ function nieuweKaart() {
     $("kaartVoor").innerHTML = `<div class="klein-tekst">${e.nr}</div><div class="reus">${e.sym}</div><div class="klein-tekst">Hoe heet ik? 🤔</div>`;
     $("kaartAchter").innerHTML = `<div class="naam">${e.naam}</div><div class="klein-tekst">${e.weetje}</div>${e.tip ? `<div class="klein-tekst">🧠 ${e.tip}</div>` : ""}`;
     const s = ["nog nieuw", "bijna gekend", "gekend ⭐"][status(e.nr)];
-    $("kaartInfo").textContent = `Dit element is ${s} ·${lijst.filter((x) => status(x.nr) === 2).length}/${lijst.length} van deze set gekend`;
+    $("kaartInfo").textContent = `Dit element is ${s} · ${lijst.filter((x) => status(x.nr) === 2).length}/${lijst.length} van deze set gekend`;
+    kaartBezig = false;
   }, 150);
 }
 $("flitskaart").onclick = () => { $("flitskaart").classList.toggle("om"); piep(520, 0.06); };
-$("kenIk").onclick = () => { scoor(huidigeKaart.nr, true); geluidGoed(); if (status(huidigeKaart.nr) === 2 && punten(huidigeKaart.nr) === 3) confetti(60); nieuweKaart(); };
-$("nogNiet").onclick = () => { scoor(huidigeKaart.nr, false); piep(300, 0.1); nieuweKaart(); };
+$("kenIk").onclick = () => { if (kaartBezig || !huidigeKaart) return; scoor(huidigeKaart.nr, true); geluidGoed(); if (status(huidigeKaart.nr) === 2 && punten(huidigeKaart.nr) === 3) confetti(60); nieuweKaart(); };
+$("nogNiet").onclick = () => { if (kaartBezig || !huidigeKaart) return; scoor(huidigeKaart.nr, false); piep(300, 0.1); nieuweKaart(); };
 $("kaartSet").onchange = nieuweKaart;
 
 // ---------- Quiz ----------
@@ -195,7 +239,8 @@ function startQuiz(modus) {
   const lijst = SETS[$("quizSet").value].lijst();
   quiz = { modus, lijst, vragen: schud(lijst).slice(0, AANTAL_VRAGEN), i: -1, score: 0, reeks: 0 };
   while (quiz.vragen.length < AANTAL_VRAGEN) quiz.vragen.push(kies(lijst));
-  $("quizStart").hidden = true; $("quizSpel").hidden = false;
+  $("quizStart").hidden = true; $("quizSpel").hidden = false; $("quizEinde").hidden = true;
+  $("quizScore").textContent = 0; $("reeks").textContent = 0;
   volgendeVraag();
 }
 
@@ -206,6 +251,7 @@ function opties(goed, veld) {
 }
 
 function volgendeVraag() {
+  if (!quiz || (quiz.i >= 0 && $("volgende").hidden)) return;
   quiz.i++;
   if (quiz.i >= AANTAL_VRAGEN) return eindeQuiz();
   const e = quiz.vragen[quiz.i];
@@ -221,7 +267,7 @@ function volgendeVraag() {
     vraag.innerHTML = `Welk element is<span class="groot" style="color:${kleur(e)}">${e.sym}</span>`;
     toonOpties(e, opties(e, "naam"), (x) => x.naam);
   } else if (quiz.modus === "weetje") {
-    const verstopt = e.weetje.replace(new RegExp(e.naam, "gi"), "???");
+    const verstopt = e.weetje.replace(new RegExp(e.naam.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), "???");
     vraag.innerHTML = `<span style="font-size:1.1rem;font-weight:500">“${verstopt}”</span><br>Over welk element gaat dit?`;
     toonOpties(e, opties(e, "naam"), (x) => `${x.sym} · ${x.naam}`);
   } else if (quiz.modus === "familie") {
@@ -270,6 +316,7 @@ function verwerk(e, goed) {
   }
   $("quizScore").textContent = quiz.score; $("reeks").textContent = quiz.reeks;
   $("volgende").hidden = false;
+  $("volgende").focus({ preventScroll: true });
 }
 
 function eindeQuiz() {

@@ -24,10 +24,10 @@ const ELEMENTEN_RUW = [
 [9,"F","Fluor","19,00","halogeen","Het meest reactieve element dat er is. Als fluoride in tandpasta beschermt het je tanden."],
 [10,"Ne","Neon","20,18","edelgas","Geeft de rood-oranje gloed in neonreclames. Neos = nieuw."],
 [11,"Na","Natrium","22,99","alkali","Samen met chloor vormt het keukenzout (NaCl). Een stukje natrium in water gaat sissen en knallen!","Na = NAtrium. Het Nederlandse woord is gewoon de Latijnse naam."],
-[12,"Mg","Magnesium","24,31","aardalkali","Brandt met een verblindend wit licht, zoals in sterretjes en vuurwerk. Zit ook in groene bladeren."],
+[12,"Mg","Magnesium","24,31","aardalkali","Brandt met een verblindend wit licht, daarom zit het in vuurwerk en noodfakkels. Zit ook in groene bladeren."],
 [13,"Al","Aluminium","26,98","hoofdmetaal","Frisdrankblikjes en aluminiumfolie. Het meest voorkomende metaal in de aardkorst."],
 [14,"Si","Silicium","28,09","metalloide","Zand is grotendeels silicium + zuurstof. Computerchips zijn van silicium: vandaar 'Silicon Valley'."],
-[15,"P","Fosfor","30,97","nietmetaal","Zit in de kop van lucifers, in je botten en in je DNA. Witte fosfor gloeit in het donker."],
+[15,"P","Fosfor","30,97","nietmetaal","Zit in het strijkvlak van een luciferdoosje, in je botten en in je DNA. Witte fosfor gloeit in het donker."],
 [16,"S","Zwavel","32,06","nietmetaal","Gele stof uit vulkanen. Rotte eieren stinken door een zwavelverbinding.","S van Sulfur, het Latijnse woord voor zwavel."],
 [17,"Cl","Chloor","35,45","halogeen","Die typische zwembadgeur? Dat is chloor dat bacteriën doodt. Ook de helft van keukenzout."],
 [18,"Ar","Argon","39,95","edelgas","Bijna 1% van de lucht. Argos betekent 'lui': het reageert met niemand."],
@@ -97,7 +97,7 @@ const ELEMENTEN_RUW = [
 [82,"Pb","Lood","207,2","hoofdmetaal","Vroeger waren waterleidingen van lood.","Pb = Plumbum. Daarom heet een loodgieter in het Engels 'plumber'!"],
 [83,"Bi","Bismut","209,0","hoofdmetaal","Vormt prachtige regenboogkleurige trapjeskristallen."],
 [84,"Po","Polonium","(209)","metalloide","Ontdekt door Marie Curie en genoemd naar haar vaderland Polen."],
-[85,"At","Astaat","(210)","halogeen","Het zeldzaamste natuurlijke element: op de hele aarde is er maar ongeveer een gram van. Astatos = onstabiel."],
+[85,"At","Astaat","(210)","halogeen","Het zeldzaamste natuurlijke element: op de hele aarde is er op elk moment maar een piepklein beetje van. Astatos = onstabiel."],
 [86,"Rn","Radon","(222)","edelgas","Radioactief gas dat uit de bodem komt en in kelders kan ophopen."],
 [87,"Fr","Francium","(223)","alkali","Genoemd naar Frankrijk. Zo zeldzaam dat niemand ooit een zichtbaar stukje heeft gezien."],
 [88,"Ra","Radium","(226)","aardalkali","Gloeit in het donker. Vroeger op wijzerplaten van klokken, tot men ontdekte hoe gevaarlijk het is."],
@@ -130,7 +130,7 @@ const ELEMENTEN_RUW = [
 [115,"Mc","Moscovium","(288)","hoofdmetaal","Genoemd naar de regio Moskou. Bestaat maar een fractie van een seconde."],
 [116,"Lv","Livermorium","(293)","hoofdmetaal","Genoemd naar het Lawrence Livermore-lab in Californië."],
 [117,"Ts","Tennessine","(294)","halogeen","Genoemd naar de Amerikaanse staat Tennessee."],
-[118,"Og","Oganesson","(294)","edelgas","Het zwaarste element dat bestaat! Genoemd naar de nog levende onderzoeker Joeri Oganesjan."],
+[118,"Og","Oganesson","(294)","edelgas","Het zwaarste element dat ooit is gemaakt! Genoemd naar de Russische onderzoeker Joeri Oganesjan."],
 ];
 
 // Plaats in het rooster [rij, kolom]; rij 9 = lanthaniden, rij 10 = actiniden
