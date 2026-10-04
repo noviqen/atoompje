@@ -183,6 +183,8 @@ select { font-family: inherit; font-size: 1rem; padding: 6px 10px; border-radius
 .brug .els span { border-radius: 6px; color: #fff; padding: 0 7px; font-weight: 800; }
 .brug p { margin: 4px 0 0; font-size: 1.1rem; }
 .brug p b { color: var(--rood); }
+.brug p.noot { font-size: .9rem; background: #fff6d6; border-radius: 10px; padding: 6px 10px; margin-top: 8px; }
+.brug .bron { display: inline-block; margin-top: 6px; font-size: .8rem; color: #5a6a86; }
 
 /* VOORTGANG */
 .voortgang-balk { height: 26px; background: #fff; border-radius: 999px; overflow: hidden; }

@@ -99,7 +99,7 @@ $("legenda").addEventListener("click", (ev) => {
   actieveCat = actieveCat === cat ? null : cat;
   document.querySelectorAll("#legenda button").forEach((b) => b.classList.toggle("uit", actieveCat && b.dataset.cat !== actieveCat));
   document.querySelectorAll("#rooster .tegel[data-nr]").forEach((t) => t.classList.toggle("vaag", actieveCat && t.dataset.cat !== actieveCat));
-  if (actieveCat) praat(`audio/cat-${cat}.mp3?v=roos`, `${CATEGORIEEN[cat].naam}. ${CATEGORIEEN[cat].uitleg}`, false);
+  if (actieveCat) praat(`audio/cat-${cat}.mp3?v=roos2`, `${CATEGORIEEN[cat].naam}. ${CATEGORIEEN[cat].uitleg}`, false);
 });
 
 // ---------- Detailkaart ----------
@@ -125,7 +125,7 @@ function openDetail(e) {
   $("overlay").hidden = false;
   document.body.classList.add("geen-scroll");
   $("spreek").focus({ preventScroll: true });
-  $("spreek").onclick = () => praat(`audio/${e.nr}.mp3?v=roos`, `${e.naam}. ${e.weetje}`);
+  $("spreek").onclick = () => praat(`audio/${e.nr}.mp3?v=roos2`, `${e.naam}. ${e.weetje}`);
   $("detail").querySelectorAll("[data-ga]").forEach((b) => (b.onclick = () => openDetail(perNr[+b.dataset.ga])));
   piep(400 + e.nr * 4, 0.08);
 }
@@ -335,7 +335,9 @@ function eindeQuiz() {
 const perSym = Object.fromEntries(ELEMENTEN.map((e) => [e.sym, e]));
 const chips = (syms) => syms.map((s) => `<span style="background:${kleur(perSym[s])}">${s}</span>`).join("");
 $("bruggen").innerHTML = EZELSBRUGGETJES.map((b) => `
-  <div class="brug"><h4>${b.titel}</h4><div class="els">${chips(b.elementen.split(" "))}</div><p>${b.zin}</p></div>`).join("");
+  <div class="brug"><h4>${b.titel}</h4><div class="els">${chips(b.elementen.split(" "))}</div><p>${b.zin}</p>
+  ${b.noot ? `<p class="noot">${b.noot}</p>` : ""}
+  <a class="bron" href="${b.url}" target="_blank" rel="noopener noreferrer">Bron: ${b.bron}</a></div>`).join("");
 $("latijn").innerHTML = ELEMENTEN.filter((e) => e.tip).map((e) => `
   <div class="brug"><div class="els">${chips([e.sym])} <b>${e.naam}</b></div><p>${e.tip}</p></div>`).join("");
 
