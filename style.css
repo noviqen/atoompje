@@ -28,9 +28,9 @@ header {
   padding: 14px 20px;
   display: flex; flex-wrap: wrap; align-items: center; gap: 4px 18px;
 }
-.logo { font-size: 1.9rem; font-weight: 800; }
-.atoom { display: inline-block; animation: draai 6s linear infinite; }
-@keyframes draai { to { transform: rotate(360deg); } }
+.logo { font-size: 2rem; font-weight: 800; display: flex; align-items: center; gap: 10px; letter-spacing: .5px; text-shadow: 0 2px 0 rgba(0,0,0,.18); }
+.logo-img { width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,.25); animation: zweef 3s ease-in-out infinite; }
+@keyframes zweef { 50% { transform: translateY(-3px) rotate(-4deg); } }
 .ondertitel { opacity: .9; flex: 1; }
 .scorebalk { display: flex; gap: 14px; align-items: center; font-size: 1.1rem; }
 .scorebalk button { background: rgba(255,255,255,.2); border: 0; border-radius: 10px; font-size: 1.1rem; padding: 2px 8px; }
