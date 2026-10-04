@@ -177,7 +177,7 @@ const EZELSBRUGGETJES = [
   { titel: "Halogenen (groep 17)", elementen: "Br F I Cl",
     zin: "<b>BR</b>om<b>FI</b>ets<b>CL</b>ub",
     noot: "Broom, fluor, jood en chloor. (Astaat en tennessine zijn ook halogenen, maar zeldzaam.)",
-    bron: "ezelsbruggetje.nl", url: "https://ezelsbruggetje.nl/vakken/scheikunde/" },
+    bron: "ezelsbruggetje.nl", url: "https://ezelsbruggetje.nl/ezelsbruggetjes/bromfietsclub/" },
   { titel: "Elementen die in paren voorkomen (H₂, O₂, …)", elementen: "Br I N Cl H O F",
     zin: "<b>BrINClHOF</b>",
     noot: "Deze zeven komen als los element altijd met twee atomen tegelijk voor: Br₂, I₂, N₂, Cl₂, H₂, O₂ en F₂.",
